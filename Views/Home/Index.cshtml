@@ -1,0 +1,164 @@
+﻿@using SheetCutting.Models.ViewModels
+@model IndexViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center mb-5">
+    <h1 class="display-4">Cutting Sheet</h1>
+    <p>This is a sample project that works with cut of sheet (metal, wood - no matter. Hemline and saw width are ignores.)</p>
+</div>
+
+@*@foreach(var item in Model.CuttedDetails)
+    {
+    <div>@item.Height * @item.Width</div>
+    }
+*@
+
+<form asp-action="Index" asp-controller="Home" method="get">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="row mb-5">
+        <div class="fw-bold fs-4 text-center mb-3">
+            Enter the size of the sheet:
+        </div>
+        <div class="col-md-6 col-12 mb-md-0 mb-3">
+            <label asp-for="Sheet.Width"></label>
+            <input asp-for="Sheet.Width" type="text" placeholder="Width" class="form-control">
+            <span asp-validation-for="Sheet.Width" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 col-12 mb-0">
+            <label asp-for="Sheet.Height"></label>
+            <input asp-for="Sheet.Height" type="text" placeholder="Height" class="form-control">
+            <span asp-validation-for="Sheet.Height" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div id="detailsContainer" class="mb-5">
+
+
+        @{
+            int i = 0;
+            string disabled = "disabled";
+        }
+        @foreach (var detail in Model.DetailsInfo)
+        {
+            <div id="detailsInfo@(i)" class="row  mb-1 border border-3 rounded rounded-3">
+                <div class="fw-bold text-center mb-1">
+                    Detail:
+                </div>
+                <div class="col-md-4 col-12 mb-4">
+                    <label asp-for="@detail.Width"></label>
+                    <input name="DetailsInfo[@(i)].width" asp-for="@detail.Width" class="form-control">
+                    <span asp-validation-for="@detail.Width" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 col-12 mb-4">
+                    <label asp-for="@detail.Height"></label>
+                    <input name="DetailsInfo[@(i)].height" asp-for="@detail.Height" class="form-control">
+                    <span asp-validation-for="@detail.Height" class="text-danger"></span>
+                </div>
+                <div class="col-md-2 col-12 mb-4">
+                    <label asp-for="@detail.Count"></label>
+                    <input name="DetailsInfo[@(i)].count" asp-for="@detail.Count" class="form-control">
+                    <span asp-validation-for="@detail.Count" class="text-danger"></span>
+                </div>
+                <div class="col-md-2 col-12 mb-md-0 mb-3 text-md-start text-center align-self-center">
+                    <button type="button" id="removeDetailInfoId@(i)" onclick="removeDetailInfo(event)" class="@disabled btn btn-outline-danger text-center w-50">-</button>
+                </div>
+            </div>
+
+            i++;
+            disabled = "";
+        }
+
+        <div class="m-3 text-center">
+            <button type="button" id="addDetailInfoId" onclick="addDetailInfo(event)" class="btn btn-success text-center m-auto">Add detail</button>
+        </div>
+    </div>
+
+
+    <div class="text-center "> <span class="border border-primary border-bottom border-2 w-50"></span> @Model.Sheet.Width --------------------------------> </div>
+    <div class="bg-secondary bg-gradient m-auto p-0" style="width:@(Model.Sheet.Width)px; height:@(Model.Sheet.Height)px; font-size:0">
+        @foreach (var item in Model.CuttedDetails)
+        {
+            <div style="width:@(item.Width)px; height:@(item.Height)px; background-color:@(item.BackgroundColor); font-size:14px" class="d-inline-block border border-2 border-dark m-0 p-0 text-center">
+                <span class="top-50 position-relative lh-lg">@(item.Width)x@(item.Height)</span>
+            </div>
+        }
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="Cut!" />
+</form>
+
+
+
+<script>
+    function addDetailInfo(event) {
+        let parent = event.target.parentElement; //document.getElementsByClassName("detailsInfoClass");
+        ///alert(parent);
+        let text = parent.previousSibling;
+        let detailsInfo = text.previousSibling;
+
+        let cloneNode = detailsInfo.cloneNode(true);
+        let children = cloneNode.children;
+        //alert(children.length);
+        for (let i = 0; i < children.length; i++) {
+            let subChildren = children[i].children;
+            //alert("length " + subChildren.length);
+            for (let j = 0; j < subChildren.length; j++) {
+                //alert(subChildren[j].type);
+
+                if (subChildren[j].type === "number") {
+                    //alert(subChildren[i].value);
+                    subChildren[j].value = "";
+
+                    let name = subChildren[j].name;
+                    let id = name[12];
+                    id++;
+
+                    name = name.substr(0, 12) + id + name.substr(13, 19);
+                    //alert("Name - " + name);
+                    subChildren[j].name = name;
+                    //alert(subChildren[j].name + ", " + j);
+                    //alert("length " + subChildren.length);
+                }
+            }
+        }
+        let nodeId = cloneNode.id;
+        let id = nodeId[nodeId.length - 1];
+        id++;
+        alert(nodeId.substr(0, nodeId.length - 1));
+        cloneNode.id = nodeId.substr(0, nodeId.length - 1) + id;
+        alert(cloneNode.id);
+        document.getElementById("detailsContainer").insertBefore(cloneNode, detailsInfo.nextSibling);
+        //alert("Done");
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*        <div class="text-center"> <-------------------------------- @Model.Sheet.Width --------------------------------> </div>
+    <div class=" bg-light bg-gradient m-0 p-0" style="width:100%; max-width:600px; height:@(Model.Sheet.Height)px;">
+    <div class="">
+    @foreach (var item in Model.CuttedDetails)
+    {
+    double x = item.Width / 600.0;
+    string width = $"{Math.Round(x * 100)}%".ToString();
+
+    <div style="width:@width; height:@(item.Height)px; color=@(item.BackgroundColor.ToString());" class=" float-start border border-2 bg-primary m-0 p-0">
+    @item.Width
+    </div>
+    }
+    </div>
+    </div>*@
