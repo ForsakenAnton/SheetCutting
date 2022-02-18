@@ -4,7 +4,7 @@
     {
         public int Width { get; set; }
         public int Height { get; set; }
-        public BackgroundColor BackgroundColor { get; set; }
+        public BackgroundColor BackgroundColor { get; set; }// = BackgroundColor.blue;
 
         public int Count { get; set; }
 

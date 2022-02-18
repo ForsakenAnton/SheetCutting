@@ -20,56 +20,86 @@ namespace SheetCutting.Controllers
 
         public IActionResult Index(IndexViewModel indexViewModel)
         {
-            // Mock Data ////////////////////////////////////////////////////////////
-            SheetViewModel sheet = new SheetViewModel()
-            {
-                Width = 1000,
-                Height = 500
-            };
+            IndexViewModel viewModel = new IndexViewModel();
 
-            DetailInfoViewModel detail1 = new DetailInfoViewModel()
+            if (indexViewModel.Sheet == null || indexViewModel.DetailsInfo == null)
             {
-                Width = 150,
-                Height = 60, //50,
-                BackgroundColor = BackgroundColor.blue,
-                Count = 5
-            };
+                viewModel.Sheet = new();
+                viewModel.DetailsInfo = new() { new DetailInfoViewModel() };
+                //viewModel.CuttedDetails = new() { new DetailViewModel() };
 
-            DetailInfoViewModel detail2 = new DetailInfoViewModel()
+                return View(viewModel);
+            }
+
+            List<DetailViewModel> cutedDetails = _cuttingFormationService.Cut(indexViewModel.Sheet, indexViewModel.DetailsInfo);
+
+            viewModel = new IndexViewModel()
             {
-                Width = 93,
-                Height = 70,
-                BackgroundColor = BackgroundColor.yellow,
-                Count = 5
-            };
-
-            DetailInfoViewModel detail3 = new DetailInfoViewModel()
-            {
-                Width = 400,
-                Height = 80,
-                BackgroundColor = BackgroundColor.red,
-                Count = 5 // 6 // 7
-            };
-
-            List<DetailInfoViewModel> detailsInfo = new List<DetailInfoViewModel>()
-            {
-                detail1, detail2, detail3
-            };
-            // ///////////////////////////////////////////////////////////////////////
-
-            List<DetailViewModel> cutedDetails = _cuttingFormationService.Cut(sheet, detailsInfo);
-
-            IndexViewModel viewModel = new IndexViewModel()
-            {
-                Sheet = sheet,
-                DetailsInfo = detailsInfo,
+                Sheet = indexViewModel.Sheet,
+                DetailsInfo = indexViewModel.DetailsInfo,
                 CuttedDetails = cutedDetails
             };
 
             return View(viewModel);
         }
 
-        
+        public IActionResult Fetch([FromBody] IndexViewModel viewModel)
+        {
+            return NoContent();
+        }
+
+        //public IActionResult Index(IndexViewModel indexViewModel)
+        //{
+        //    // Mock Data ////////////////////////////////////////////////////////////
+        //    SheetViewModel sheet = new SheetViewModel()
+        //    {
+        //        Width = 1000,
+        //        Height = 500
+        //    };
+
+        //    DetailInfoViewModel detail1 = new DetailInfoViewModel()
+        //    {
+        //        Width = 150,
+        //        Height = 60, //50,
+        //        BackgroundColor = BackgroundColor.blue,
+        //        Count = 5
+        //    };
+
+        //    DetailInfoViewModel detail2 = new DetailInfoViewModel()
+        //    {
+        //        Width = 93,
+        //        Height = 70,
+        //        BackgroundColor = BackgroundColor.yellow,
+        //        Count = 5
+        //    };
+
+        //    DetailInfoViewModel detail3 = new DetailInfoViewModel()
+        //    {
+        //        Width = 400,
+        //        Height = 80,
+        //        BackgroundColor = BackgroundColor.red,
+        //        Count = 5 // 6 // 7
+        //    };
+
+        //    List<DetailInfoViewModel> detailsInfo = new List<DetailInfoViewModel>()
+        //    {
+        //        detail1, detail2, detail3
+        //    };
+        //    // ///////////////////////////////////////////////////////////////////////
+
+        //    List<DetailViewModel> cutedDetails = _cuttingFormationService.Cut(sheet, detailsInfo);
+
+        //    IndexViewModel viewModel = new IndexViewModel()
+        //    {
+        //        Sheet = sheet,
+        //        DetailsInfo = detailsInfo,
+        //        CuttedDetails = cutedDetails
+        //    };
+
+        //    return View(viewModel);
+        //}
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
