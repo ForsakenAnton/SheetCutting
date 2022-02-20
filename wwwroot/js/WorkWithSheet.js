@@ -1,95 +1,120 @@
-﻿function addDetailInfo(event) {
+﻿
+//let isValid = true;
+
+
+function addDetailInfo(event) {
+
+    if (document.getElementsByName("detailCount").length == 1) {
+        document.getElementsByName("removeDetailInfo")[0].classList.remove("disabled");
+    }
 
     let parent = event.target.parentElement; //document.getElementsByClassName("detailsInfoClass");
-    ///alert(parent);
+    ///console.log(parent);
     let text = parent.previousSibling;
     let detailsInfo = text.previousSibling;
 
     let cloneNode = detailsInfo.cloneNode(true);
     let children = cloneNode.children;
-    //alert(children.length);
+    //console.log(children.length);
+
     for (let i = 0; i < children.length; i++) {
         let subChildren = children[i].children;
-        //alert("length " + subChildren.length);
+        //console.log("length " + subChildren.length);
         for (let j = 0; j < subChildren.length; j++) {
-            //alert(subChildren[j].type);
+            //console.log(subChildren[j].type);
 
             if (subChildren[j].type === "number") {
-                //alert(subChildren[i].value);
-                subChildren[j].value = "";
-
-                let name = subChildren[j].name;
-                let id = name[name.length - 1];
-                id++;
-                name = name.substr(0, name.length - 1) + id;
-                subChildren[j].name = name;
-                subChildren[j].value = 0;
-                //let id = name[12];
-                //id++;
-
-                //name = name.substr(0, 12) + id + name.substr(13, 19);
-                ////alert("Name - " + name);
-                //subChildren[j].name = name;
-                ////alert(subChildren[j].name + ", " + j);
-                ////alert("length " + subChildren.length);
+                //console.log(subChildren[i].value);
+                if (subChildren[j].name === "detailCount") {
+                    subChildren[j].value = 0;
+                    subChildren[j].classList.remove("border-warning");
+                    subChildren[j].classList.remove("border-3");
+                    subChildren[j].nextElementSibling.innerText = "";
+                }
+                else {
+                    subChildren[j].value = 50;
+                    subChildren[j].classList.remove("border-danger");
+                    subChildren[j].classList.remove("border-3");
+                    subChildren[j].nextElementSibling.innerText = "";
+                }
             }
         }
     }
+
     let nodeId = cloneNode.id;
     let id = nodeId[nodeId.length - 1];
     id++;
-    //alert(nodeId.substr(0, nodeId.length - 1));
+    //console.log(nodeId.substr(0, nodeId.length - 1));
     cloneNode.id = nodeId.substr(0, nodeId.length - 1) + id;
-    //alert(cloneNode.id);
+    //console.log(cloneNode.id);
     document.getElementById("detailsContainer").insertBefore(cloneNode, detailsInfo.nextSibling);
-    //alert("Done");
+    //console.log("Done");
 }
 
-async function detailChanged(event) {
 
-    let form = document.sheetForm;
-    let sheetWidth = form.elements.sheetWidth;
-    let sheetHeight = form.elements.sheetHeight;
+ function detailOnInput(event) {
 
-    //let detailWidth = form.elements.detailWidth;
-    //let detailHeight = form.elements.detailHeight;
-    //let detailCount = form.elements.detailCount;
+    updateDetailsPartial();
+}
+
+
+function removeDetailInfo(event) {
+    let parent = event.target.parentElement; 
+    console.log(parent);
+    let detailsInfo = parent.parentElement;
+    console.log(detailsInfo);
+
+    detailsInfo.remove();
+
+    if (document.getElementsByName("detailCount").length == 1) {
+        document.getElementsByName("removeDetailInfo")[0].classList.add("disabled");
+    }
+
+    updateDetailsPartial();
+}
+
+
+async function updateDetailsPartial() {
+
+    //isValid = true;
+
+    let sheetWidth = document.getElementById("sheetWidthId");
+    let sheetHeight = document.getElementById("sheetHeightId");
+
+    validate(sheetWidth, 500, 1500, "border-danger", "border-3", document.getElementById("sheetWidthValidationId"), "Width must be not less than 0 and most than 1500");
+    validate(sheetHeight, 500, 1500, "border-danger", "border-3", document.getElementById("sheetHeightValidationId"), "Height must be not less than 0 and most than 1500");
 
     let sheetObj = {
-        width: sheetWidth.value,
-        height: sheetHeight.value
+        width: sheetWidth.value === "" ? 0 : sheetWidth.value,
+        height: sheetHeight.value === "" ? 0 : sheetHeight.value
     };
+
+
+    let detailWidthes = document.getElementsByName("detailWidth");
+    let detailHeights = document.getElementsByName("detailHeight");
+    let detailCounts = document.getElementsByName("detailCount");
+
+    let detailWidthValidations = document.getElementsByName("detailWidthValidation");
+    let detailHeightValidations = document.getElementsByName("detailHeightValidation");
+    let detailCountValidations = document.getElementsByName("detailCountValidation");
 
     let detailsInfoObj = [];
 
-    for (let i = 0; ; i++) {
-        let detailWidth = form.elements["detailWidth" + i];
-        let detailHeight = form.elements["detailHeight" + i];
-        let detailCount = form.elements["detailCount" + i];
-
-        if (detailWidth === undefined) {
-            break;
-        }
+    for (let i = 0; i < detailCounts.length; i++) {
 
         detailsInfoObj[i] = {
-            width: detailWidth.value,
-            height: detailHeight.value,
-            count: detailCount.value
+            width: detailWidthes[i].value === "" ? 0 : detailWidthes[i].value,
+            height: detailHeights[i].value === "" ? 0 : detailHeights[i].value,
+            count: detailCounts[i].value === "" ? 0 : detailCounts[i].value
         };
+
+        validate(detailWidthes[i], 50, Infinity, "border-danger", "border-3", detailWidthValidations[i], "Width must be not less than 50");
+        validate(detailHeights[i], 50, Infinity, "border-danger", "border-3", detailHeightValidations[i], "Height must be not less than 50");
+        validate(detailCounts[i], 1, Infinity, "border-warning", "border-bottom", detailCountValidations[i], "");
     }
 
-    //detailsInfoObj[0] = {
-    //    width: detailWidth.value,
-    //    height: detailHeight.value,
-    //    count: detailCount.value
-    //};
-
-    //for (let i = 1; i < detailWidth.length; i++) {
-    //    detailsInfoObj[i] = {
-    //        width: detailWidth.value,
-    //        height: detailHeight.value,
-    //        count: detailCount.value
-    //    };
+    //if (!isValid) {
+    //    return;
     //}
 
     let indexObj = {
@@ -98,7 +123,7 @@ async function detailChanged(event) {
         cuttedDetails: null
     }
 
-    let response = await fetch('/home/fetch', {
+    let response = await fetch('/Home/FetchDetailsPartial', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -106,6 +131,24 @@ async function detailChanged(event) {
         body: JSON.stringify(indexObj)
     });
 
-    //alert(sheetWidth.value + " " + sheetHeight.value + " " + detailWidth.value + " " + detailHeight.value + " " + detailCount.length);
+    let result = await response.text();
+    document.getElementById("detailsPartialId").innerHTML = result;
 
+    //console.log(sheetWidth.value + " " + sheetHeight.value + " " + detailWidth.value + " " + detailHeight.value + " " + detailCount.length);
+}
+
+function validate(element, minValue, maxValue, className1, className2, validationElement, validationText) {
+    if (element.value < minValue || element.value > maxValue) {
+        if (!element.classList.contains(className1))
+            element.classList.add(className1);
+        if (!element.classList.contains(className2))
+            element.classList.add(className2);
+        validationElement.innerText = validationText;
+        //isValid = false;
+    }
+    else {
+        element.classList.remove(className1);
+        element.classList.remove(className2);
+        validationElement.innerText = "";
+    }
 }

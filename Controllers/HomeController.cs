@@ -4,6 +4,7 @@ using System.Diagnostics;
 using SheetCutting.Models;
 using SheetCutting.Models.ViewModels;
 using SheetCutting.Services;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace SheetCutting.Controllers
 {
@@ -18,34 +19,44 @@ namespace SheetCutting.Controllers
             _cuttingFormationService = cuttingFormationService;
         }
 
-        public IActionResult Index(IndexViewModel indexViewModel)
+        public IActionResult Index()
         {
-            IndexViewModel viewModel = new IndexViewModel();
-
-            if (indexViewModel.Sheet == null || indexViewModel.DetailsInfo == null)
+            IndexViewModel viewModel = new IndexViewModel()
             {
-                viewModel.Sheet = new();
-                viewModel.DetailsInfo = new() { new DetailInfoViewModel() };
+                Sheet = new(),
+                DetailsInfo = new() { new DetailInfoViewModel() },
                 //viewModel.CuttedDetails = new() { new DetailViewModel() };
-
-                return View(viewModel);
-            }
-
-            List<DetailViewModel> cutedDetails = _cuttingFormationService.Cut(indexViewModel.Sheet, indexViewModel.DetailsInfo);
-
-            viewModel = new IndexViewModel()
-            {
-                Sheet = indexViewModel.Sheet,
-                DetailsInfo = indexViewModel.DetailsInfo,
-                CuttedDetails = cutedDetails
             };
 
             return View(viewModel);
         }
 
-        public IActionResult Fetch([FromBody] IndexViewModel viewModel)
+        public IActionResult FetchDetailsPartial([FromBody] IndexViewModel viewModel)
         {
-            return NoContent();
+            //if (!ModelState.IsValid)
+            //{
+            //    string failedChanges = "";
+
+            //    foreach (ModelError error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            //    {
+            //        failedChanges += error.ErrorMessage + "\n";
+            //    }
+            //    failedChanges = failedChanges.TrimEnd('\n');
+            //    ViewBag.failedChanges = failedChanges.Split("\n");
+
+            //    return View("_ErrorDetailsPartial", failedChanges.Split('\n'));
+            //}
+
+            try
+            {
+                viewModel.CuttedDetails = _cuttingFormationService.Cut(viewModel.Sheet, viewModel.DetailsInfo);
+            }
+            catch (Exception ex)
+            {
+                return PartialView("_ErrorDetailsPartial", ex.Message.TrimEnd().Split('\n'));
+            }
+
+            return PartialView("_DetailsPartial", viewModel);
         }
 
         //public IActionResult Index(IndexViewModel indexViewModel)

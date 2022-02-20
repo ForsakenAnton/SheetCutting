@@ -1,9 +1,14 @@
-﻿namespace SheetCutting.Models.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SheetCutting.Models.ViewModels
 {
     public class DetailInfoViewModel : ICloneable
     {
-        public int Width { get; set; }
-        public int Height { get; set; }
+        [Range(50, double.PositiveInfinity, ErrorMessage = "Width must be not less than 50")]
+        public int Width { get; set; } = 50;
+
+        [Range(50, double.PositiveInfinity, ErrorMessage = "Height must be not less than 50")]
+        public int Height { get; set; } = 50;
         public BackgroundColor BackgroundColor { get; set; }// = BackgroundColor.blue;
 
         public int Count { get; set; }

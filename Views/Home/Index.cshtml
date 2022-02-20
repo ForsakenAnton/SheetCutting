@@ -11,28 +11,21 @@
     <p>This is a sample project that works with cut of sheet (metal, wood - no matter. Hemline and saw width are ignores.)</p>
 </div>
 
-@*@foreach(var item in Model.CuttedDetails)
-    {
-    <div>@item.Height * @item.Width</div>
-    }
-*@
-
-<form name="sheetForm" asp-action="Index" asp-controller="Home" method="get">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
     <div class="row mb-5">
         <div class="fw-bold fs-4 text-center mb-3">
             Enter the size of the sheet:
         </div>
         <div class="col-md-6 col-12 mb-md-0 mb-3">
             <label asp-for="Sheet.Width"></label>
-            <input asp-for="Sheet.Width" name="sheetWidth" onchange="detailChanged(event)" placeholder="Width" class="form-control">
-            <span asp-validation-for="Sheet.Width" class="text-danger"></span>
+            <input asp-for="Sheet.Width" id="sheetWidthId" name="sheetWidth" oninput="detailOnInput(event)" placeholder="Width" class="form-control">
+            <div id="sheetWidthValidationId" class="fw-bold text-danger"></div>
+            @*<span asp-validation-for="Sheet.Width" class="text-danger"></span>*@
         </div>
         <div class="col-md-6 col-12 mb-0">
             <label asp-for="Sheet.Height"></label>
-            <input asp-for="Sheet.Height" name="sheetHeight" onchange="detailChanged(event)" placeholder="Height" class="form-control">
-            <span asp-validation-for="Sheet.Height" class="text-danger"></span>
+            <input asp-for="Sheet.Height" id="sheetHeightId" name="sheetHeight" oninput="detailOnInput(event)" placeholder="Height" class="form-control">
+            <div id="sheetHeightValidationId" class="fw-bold textd"></div>
+            @*<span asp-validation-for="Sheet.Height" class="text-danger"></span>*@
         </div>
     </div>
 
@@ -51,53 +44,40 @@
                 </div>
                 <div class="col-md-4 col-12 mb-4">
                     <label asp-for="@detail.Width"></label>
-                    <input value="@detail.Width" name="detailWidth@(i)" type="number" onchange="detailChanged(event)" class="form-control form-control-sm">
-                    <span asp-validation-for="@detail.Width" class="text-danger"></span>
+                    <input value="@detail.Width" name="detailWidth" type="number" oninput="detailOnInput(event)" class="form-control form-control-sm">
+                    <div name="detailWidthValidation" class="fw-bold text-danger"></div>
+                    @*<span asp-validation-for="@detail.Width" class="text-danger"></span>*@
                 </div>
                 <div class="col-md-4 col-12 mb-4">
                     <label asp-for="@detail.Height"></label>
-                    <input value="@detail.Height" name="detailHeight@(i)" type="number" onchange="detailChanged(event)" class="form-control form-control-sm">
-                    <span asp-validation-for="@detail.Height" class="text-danger"></span>
+                    <input value="@detail.Height" name="detailHeight" type="number" oninput="detailOnInput(event)" class="form-control form-control-sm">
+                    <div name="detailHeightValidation" class="fw-bold text-danger"></div>
+                    @*<span asp-validation-for="@detail.Height" class="text-danger"></span>*@
                 </div>
                 <div class="col-md-2 col-12 mb-4">
                     <label asp-for="@detail.Count"></label>
-                    <input value="@detail.Count" name="detailCount@(i)" type="number" onchange="detailChanged(event)" class="form-control form-control-sm" />
-                    <span asp-validation-for="@detail.Count" class="text-danger"></span>
+                    <input value="@detail.Count" name="detailCount" type="number" oninput="detailOnInput(event)" class="form-control form-control-sm" />
+                    <div name="detailCountValidation" class="fw-bold"></div>
+                    @*<span asp-validation-for="@detail.Count" class="text-danger"></span>*@
                 </div>
                 <div class="col-md-2 col-12 mb-md-0 mb-3 text-md-start text-center align-self-center">
-                    <button type="button" id="removeDetailInfoId@(i)" onclick="removeDetailInfo(event)" class="btn btn-close text-center w-50"></button>
+                    <button type="button" name="removeDetailInfo" id="removeDetailInfoId@(i)" onclick="removeDetailInfo(event)" class="btn btn-close text-center w-50"></button>
                 </div>
             </div>
 
             i++;
             //disabled = "";
         }
-
         <div class="m-3 text-center">
             <button type="button" id="addDetailInfoId" onclick="addDetailInfo(event)" class="btn btn-success text-center m-auto">Add detail</button>
         </div>
     </div>
 
-    <input type="submit" class="btn btn-primary" value="Cut!" />
-</form>
+    <div id="detailsPartialId">
+        
+        @await Html.PartialAsync("_DetailsPartial", Model)
 
-<div class="text-center "> <-------------------------------- @Model.Sheet.Width --------------------------------> </div>
-    <div class="bg-secondary bg-gradient m-auto p-0" style="width:100%; max-width:@(Model.Sheet.Width)px; height:@(Model.Sheet.Height)px; font-size:0">
-        @if (Model.CuttedDetails != null)
-        {
-            @foreach (var item in Model.CuttedDetails)
-            {
-                @*double widthInPercent = Math.Floor((double) item.Width / Model.Sheet.Width * 100);*@
-                double widthInPercent = (double) item.Width / Model.Sheet.Width * 100;
-                string percent = widthInPercent.ToString().Replace(',', '.') + "%";
-
-                <div style="width:@percent; height:@(item.Height)px; background-color:@(item.BackgroundColor); font-size:14px; opacity: 0.7" class="d-inline-block border border-2 border-dark bg-gradient m-0 p-0 text-center">
-                    <span style="opacity:1" class="top-50 position-relative">@(item.Width)x@(item.Height)</span>
-                </div>
-            }
-        }
     </div>
-
 
 
 @section Scripts {

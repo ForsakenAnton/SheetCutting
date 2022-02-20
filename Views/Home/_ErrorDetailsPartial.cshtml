@@ -1,0 +1,8 @@
+﻿@model string[]
+
+<div class="alert alert-primary text-center fs-4 border-0" role="alert">
+    @foreach (var message in Model)
+    {
+        <div class="text-primary border-bottom border-danger border-3 rounded-0 mb-1 ps-3">@message</div>
+    }
+</div>

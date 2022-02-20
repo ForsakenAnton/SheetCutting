@@ -1,0 +1,21 @@
+﻿@using SheetCutting.Models.ViewModels
+@model IndexViewModel
+
+<div class="m-0"> <-------------------------------- @Model.Sheet.Width --------------------------------> </div>
+<div class="ps-4" style="transform:rotate(90deg); transform-origin:top left"> <-------------------------------- @Model.Sheet.Height --------------------------------> </div>
+<div class="bg-gradient border border-dark p-0 position-relative" style="width:100%; max-width:@(Model.Sheet.Width)px; height:@(Model.Sheet.Height)px; background-color:gainsboro; font-size:0">
+    @if (Model.CuttedDetails != null)
+        {
+            @foreach (var item in Model.CuttedDetails)
+            {
+                @*double widthInPercent = Math.Floor((double) item.Width / Model.Sheet.Width * 100);*@
+                double widthInPercent = (double) item.Width / Model.Sheet.Width * 100;
+                string percent = widthInPercent.ToString().Replace(',', '.') + "%";
+
+                <div style="width:@percent; height:@(item.Height)px; background-color:@(item.BackgroundColor); font-size:14px; opacity: 0.7" class="d-inline-block border border-2 border-dark bg-gradient m-0 p-0 text-center">
+                    <span style="opacity:1" class="top-50 position-relative">@(item.Width)x@(item.Height)</span>
+                </div>
+            }
+        }
+    }
+</div>
