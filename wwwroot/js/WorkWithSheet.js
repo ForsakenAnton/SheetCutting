@@ -1,6 +1,21 @@
 ﻿
 //let isValid = true;
 
+let colors = [
+    "blue",
+    "yellow",
+    "red",
+    "green",
+    "violet",
+    "brown",
+    "orange"
+];
+
+
+window.onload = function () {
+    document.getElementsByName("removeDetailInfo")[0].classList.add("disabled");
+}
+
 
 function addDetailInfo(event) {
 
@@ -49,6 +64,25 @@ function addDetailInfo(event) {
     //console.log(cloneNode.id);
     document.getElementById("detailsContainer").insertBefore(cloneNode, detailsInfo.nextSibling);
     //console.log("Done");
+
+    let deleteButtons = document.getElementsByName("removeDetailInfo");
+    let addedButton = deleteButtons[deleteButtons.length - 1];
+
+    let arrayColorsOfButtons = [];
+    for (let i = 0; i < deleteButtons.length; i++) {
+        arrayColorsOfButtons.push(deleteButtons[i].style.backgroundColor);
+    }
+
+    for (let i = 0, j = 0; i < colors.length; i++) {
+        if (arrayColorsOfButtons.includes(colors[i])) {
+            continue;
+        }
+        addedButton.style.backgroundColor = colors[i];
+        break;
+    }
+    //deleteButtons[deleteButtons.length - 1].style.backgroundColor = colors[deleteButtons.length];
+
+    //updateDetailsPartial();
 }
 
 
@@ -97,6 +131,12 @@ async function updateDetailsPartial() {
     let detailWidthValidations = document.getElementsByName("detailWidthValidation");
     let detailHeightValidations = document.getElementsByName("detailHeightValidation");
     let detailCountValidations = document.getElementsByName("detailCountValidation");
+    let deleteButtons = document.getElementsByName("removeDetailInfo");
+
+    let arrayColorsOfButtons = [];
+    for (let i = 0; i < deleteButtons.length; i++) {
+        arrayColorsOfButtons.push(deleteButtons[i].style.backgroundColor);
+    }
 
     let detailsInfoObj = [];
 
@@ -105,7 +145,8 @@ async function updateDetailsPartial() {
         detailsInfoObj[i] = {
             width: detailWidthes[i].value === "" ? 0 : detailWidthes[i].value,
             height: detailHeights[i].value === "" ? 0 : detailHeights[i].value,
-            count: detailCounts[i].value === "" ? 0 : detailCounts[i].value
+            count: detailCounts[i].value === "" ? 0 : detailCounts[i].value,
+            backgroundColor: colors.indexOf(deleteButtons[i].style.backgroundColor) //deleteButtons[i].style.backgroundColor
         };
 
         validate(detailWidthes[i], 50, Infinity, "border-danger", "border-3", detailWidthValidations[i], "Width must be not less than 50");
@@ -133,6 +174,10 @@ async function updateDetailsPartial() {
 
     let result = await response.text();
     document.getElementById("detailsPartialId").innerHTML = result;
+
+    for (var i = 0; i < deleteButtons.length; i++) {
+        deleteButtons[i].style.backgroundColor = detailsInfoObj[i].backgroundColor; //colors[i];
+    }
 
     //console.log(sheetWidth.value + " " + sheetHeight.value + " " + detailWidth.value + " " + detailHeight.value + " " + detailCount.length);
 }

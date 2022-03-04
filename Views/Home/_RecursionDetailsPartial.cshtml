@@ -1,0 +1,40 @@
+﻿@using SheetCutting.Models.ViewModels
+@model DetailViewModel
+
+@foreach (var item in Model.Details)
+{
+    double widthInPercent = (double)item.Width / Model.Width * 100;
+    string percent = widthInPercent.ToString().Replace(',', '.') + "%";
+
+    <div class="d-inline-block m-0 p-0 align-top" style="width:@percent;">
+        <div style="height:@(item.Height)px; background-color:@(item.BackgroundColor); font-size:14px; opacity: 0.7" class="border border-2 border-dark bg-gradient m-0 p-0 text-center">
+            <span style="opacity:1" class="top-50 position-relative">@(item.Width)x@(item.Height)</span>
+        </div>
+        if (item.Details?.Count > 0)
+        {
+            @await Html.PartialAsync(
+                "_RecursionDetailsPartial",
+                item);
+        }
+    </div>
+}
+
+
+
+@*@foreach (var item in Model.Details)
+{
+    double widthInPercent = (double)item.Width / Model.Width * 100;
+    string percent = widthInPercent.ToString().Replace(',', '.') + "%";
+
+    <div class="d-inline-block m-0 p-0" style="width:@percent;">
+        <div style="height:@(item.Height)px; background-color:@(item.BackgroundColor); font-size:14px; opacity: 0.7" class="border border-2 border-dark bg-gradient m-0 p-0 text-center">
+            <span style="opacity:1" class="top-50 position-relative">@(item.Width)x@(item.Height)</span>
+        </div>
+        if (item.Details?.Count > 0)
+        {
+            @await Html.PartialAsync(
+                "_RecursionDetailsPartial",
+                item);
+        }
+    </div>
+}*@

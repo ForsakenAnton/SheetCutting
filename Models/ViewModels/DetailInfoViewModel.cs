@@ -17,7 +17,14 @@ namespace SheetCutting.Models.ViewModels
 
         public object Clone()
         {
-            return MemberwiseClone();
+            //return MemberwiseClone();
+            return new DetailInfoViewModel()
+            {
+                Width = Width,
+                Height = Height,
+                BackgroundColor = BackgroundColor,
+                Count = Count,
+            };
         }
     }
 }
