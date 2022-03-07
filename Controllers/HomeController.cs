@@ -25,7 +25,7 @@ namespace SheetCutting.Controllers
             {
                 Sheet = new(),
                 DetailsInfo = new() { new DetailInfoViewModel() },
-                //viewModel.CuttedDetails = new() { new DetailViewModel() };
+                //CuttedDetails = new() { new DetailViewModel() }
             };
 
             return View(viewModel);
@@ -58,58 +58,6 @@ namespace SheetCutting.Controllers
 
             return PartialView("_DetailsPartial", viewModel);
         }
-
-        //public IActionResult Index(IndexViewModel indexViewModel)
-        //{
-        //    // Mock Data ////////////////////////////////////////////////////////////
-        //    SheetViewModel sheet = new SheetViewModel()
-        //    {
-        //        Width = 1000,
-        //        Height = 500
-        //    };
-
-        //    DetailInfoViewModel detail1 = new DetailInfoViewModel()
-        //    {
-        //        Width = 150,
-        //        Height = 60, //50,
-        //        BackgroundColor = BackgroundColor.blue,
-        //        Count = 5
-        //    };
-
-        //    DetailInfoViewModel detail2 = new DetailInfoViewModel()
-        //    {
-        //        Width = 93,
-        //        Height = 70,
-        //        BackgroundColor = BackgroundColor.yellow,
-        //        Count = 5
-        //    };
-
-        //    DetailInfoViewModel detail3 = new DetailInfoViewModel()
-        //    {
-        //        Width = 400,
-        //        Height = 80,
-        //        BackgroundColor = BackgroundColor.red,
-        //        Count = 5 // 6 // 7
-        //    };
-
-        //    List<DetailInfoViewModel> detailsInfo = new List<DetailInfoViewModel>()
-        //    {
-        //        detail1, detail2, detail3
-        //    };
-        //    // ///////////////////////////////////////////////////////////////////////
-
-        //    List<DetailViewModel> cutedDetails = _cuttingFormationService.Cut(sheet, detailsInfo);
-
-        //    IndexViewModel viewModel = new IndexViewModel()
-        //    {
-        //        Sheet = sheet,
-        //        DetailsInfo = detailsInfo,
-        //        CuttedDetails = cutedDetails
-        //    };
-
-        //    return View(viewModel);
-        //}
-
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

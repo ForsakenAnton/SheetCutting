@@ -17,13 +17,13 @@
     </div>
     <div class="col-md-6 col-12 mb-md-0 mb-3">
         <label asp-for="Sheet.Width"></label>
-        <input asp-for="Sheet.Width" id="sheetWidthId" name="sheetWidth" oninput="detailOnInput(event)" placeholder="Width" class="form-control">
+        <input asp-for="Sheet.Width" id="sheetWidthId" name="sheetWidth" placeholder="Width" class="form-control">
         <div id="sheetWidthValidationId" class="fw-bold text-danger"></div>
         @*<span asp-validation-for="Sheet.Width" class="text-danger"></span>*@
     </div>
     <div class="col-md-6 col-12 mb-0">
         <label asp-for="Sheet.Height"></label>
-        <input asp-for="Sheet.Height" id="sheetHeightId" name="sheetHeight" oninput="detailOnInput(event)" placeholder="Height" class="form-control">
+        <input asp-for="Sheet.Height" id="sheetHeightId" name="sheetHeight" placeholder="Height" class="form-control">
         <div id="sheetHeightValidationId" class="fw-bold textd"></div>
         @*<span asp-validation-for="Sheet.Height" class="text-danger"></span>*@
     </div>
@@ -31,7 +31,7 @@
 
 <div id="detailsContainer" class="mb-5">
 
-
+    <h1>@Model?.CuttedDetails?.Count</h1>
     @{
         int i = 0;
         //string disabled = "disabled";
@@ -44,19 +44,19 @@
             </div>
             <div class="col-md-4 col-12 mb-4">
                 <label asp-for="@detail.Width"></label>
-                <input value="@detail.Width" name="detailWidth" type="number" oninput="detailOnInput(event)" class="form-control form-control-sm">
+                <input value="@detail.Width" name="detailWidth" type="number" class="form-control form-control-sm">
                 <div name="detailWidthValidation" class="fw-bold text-danger"></div>
                 @*<span asp-validation-for="@detail.Width" class="text-danger"></span>*@
             </div>
             <div class="col-md-4 col-12 mb-4">
                 <label asp-for="@detail.Height"></label>
-                <input value="@detail.Height" name="detailHeight" type="number" oninput="detailOnInput(event)" class="form-control form-control-sm">
+                <input value="@detail.Height" name="detailHeight" type="number" class="form-control form-control-sm">
                 <div name="detailHeightValidation" class="fw-bold text-danger"></div>
                 @*<span asp-validation-for="@detail.Height" class="text-danger"></span>*@
             </div>
             <div class="col-md-2 col-12 mb-4">
                 <label asp-for="@detail.Count"></label>
-                <input value="@detail.Count" name="detailCount" type="number" oninput="detailOnInput(event)" class="form-control form-control-sm" />
+                <input value="@detail.Count" name="detailCount" type="number" class="form-control form-control-sm" />
                 <div name="detailCountValidation" class="fw-bold"></div>
                 @*<span asp-validation-for="@detail.Count" class="text-danger"></span>*@
             </div>
@@ -69,7 +69,8 @@
         //disabled = "";
     }
     <div class="m-3 text-center">
-        <button type="button" id="addDetailInfoId" onclick="addDetailInfo(event)" class="btn btn-success text-center m-auto">Add detail</button>
+        <button type="button" id="addDetailInfoId" onclick="addDetailInfo(event)" class="btn btn-primary text-center m-auto me-5">Add detail</button>
+        <button type="button" id="calculateId" onclick="updateDetailsPartial()" class="btn btn-success text-center m-auto">Calculate</button>
     </div>
 </div>
 

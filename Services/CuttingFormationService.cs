@@ -58,6 +58,7 @@ namespace SheetCutting.Services
             int maxHeightOfDetail = details.Max(d => d.Height);
 
             List<DetailInfoViewModel> sortedDetails = details
+                .Where(d => Validator.TryValidateObject(d, new ValidationContext(d), null, true))
                 .Select(d => d.Clone() as DetailInfoViewModel)
                 //.OrderByDescending(d => d?.Height) // (!) Сортируем по высоте детали
                 .OrderByDescending(d => (d?.Height * d?.Width)) // (!) сортируем по площади

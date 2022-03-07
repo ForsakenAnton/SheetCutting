@@ -11,7 +11,7 @@
             <div class="grid-sizer" style="background-color:green"></div>
             @foreach (var item in Model.CuttedDetails)
             {
-                <div style=" width:@(item.Width)px; height:@(item.Height)px; background-color:@(item.BackgroundColor); opacity:1" class="grid-item border border-2 rounded border-dark bg-gradient m-0 p-0 text-center">
+                <div name="detail" style=" width:@(item.Width)px; height:@(item.Height)px; background-color:@(item.BackgroundColor); opacity:1" class="grid-item border border-2 rounded border-dark bg-gradient m-0 p-0 text-center">
                     <span style="opacity:1;" class="top-50 position-relative small">@(item.Width)x@(item.Height)</span>
                 </div>
 

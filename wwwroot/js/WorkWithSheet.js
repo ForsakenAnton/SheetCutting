@@ -119,12 +119,13 @@ function removeDetailInfo(event) {
         document.getElementsByName("removeDetailInfo")[0].classList.add("disabled");
     }
 
-    updateDetailsPartial();
+    if (document.getElementsByName("detail").length !== 0) {
+        updateDetailsPartial();
+    }
 }
 
 
 async function updateDetailsPartial() {
-
     //isValid = true;
     let sheetWidth = document.getElementById("sheetWidthId");
     let sheetHeight = document.getElementById("sheetHeightId");
@@ -233,7 +234,7 @@ async function updateDetailsPartial() {
     $('.grid').masonry({
         itemSelector: '.grid-item',
         columnWidth: '.grid-sizer',
-        horizontalOrder: true,
+        //horizontalOrder: true,
         // gutter: 0,
         // percentPosition: true,
         resize: false
