@@ -1,6 +1,21 @@
 ﻿
 //let isValid = true;
 
+//var container = document.querySelector('#container');
+//var msnry = new Masonry(container, {
+//    // Настройки
+//    //columnWidth: 200,
+//    itemSelector: '.item'
+//});
+
+//$('.grid').masonry({
+//    itemSelector: '.grid-item',
+//    columnWidth: '.grid-sizer',
+//    gutter: 0,
+//    //horizontalOrder: true,
+//    percentPosition: true,
+//});
+
 let colors = [
     "blue",
     "yellow",
@@ -111,12 +126,26 @@ function removeDetailInfo(event) {
 async function updateDetailsPartial() {
 
     //isValid = true;
-
     let sheetWidth = document.getElementById("sheetWidthId");
     let sheetHeight = document.getElementById("sheetHeightId");
 
-    validate(sheetWidth, 500, 1500, "border-danger", "border-3", document.getElementById("sheetWidthValidationId"), "Width must be not less than 0 and most than 1500");
-    validate(sheetHeight, 500, 1500, "border-danger", "border-3", document.getElementById("sheetHeightValidationId"), "Height must be not less than 0 and most than 1500");
+    validate(
+        sheetWidth,
+        500,
+        1500,
+        "border-danger",
+        "border-3",
+        document.getElementById("sheetWidthValidationId"),
+        "Width must be not less than 0 and most than 1500");
+
+    validate(
+        sheetHeight,
+        500,
+        1500,
+        "border-danger",
+        "border-3",
+        document.getElementById("sheetHeightValidationId"),
+        "Height must be not less than 0 and most than 1500");
 
     let sheetObj = {
         width: sheetWidth.value === "" ? 0 : sheetWidth.value,
@@ -149,9 +178,30 @@ async function updateDetailsPartial() {
             backgroundColor: colors.indexOf(deleteButtons[i].style.backgroundColor) //deleteButtons[i].style.backgroundColor
         };
 
-        validate(detailWidthes[i], 50, Infinity, "border-danger", "border-3", detailWidthValidations[i], "Width must be not less than 50");
-        validate(detailHeights[i], 50, Infinity, "border-danger", "border-3", detailHeightValidations[i], "Height must be not less than 50");
-        validate(detailCounts[i], 1, Infinity, "border-warning", "border-bottom", detailCountValidations[i], "");
+        validate(
+            detailWidthes[i],
+            50,
+            Infinity,
+            "border-danger",
+            "border-3",
+            detailWidthValidations[i],
+            "Width must be not less than 50");
+
+        validate(detailHeights[i],
+            50,
+            Infinity,
+            "border-danger",
+            "border-3",
+            detailHeightValidations[i],
+            "Height must be not less than 50");
+
+        validate(detailCounts[i],
+            1,
+            Infinity,
+            "border-warning",
+            "border-bottom",
+            detailCountValidations[i],
+            "");
     }
 
     //if (!isValid) {
@@ -179,8 +229,34 @@ async function updateDetailsPartial() {
         deleteButtons[i].style.backgroundColor = detailsInfoObj[i].backgroundColor; //colors[i];
     }
 
-    //console.log(sheetWidth.value + " " + sheetHeight.value + " " + detailWidth.value + " " + detailHeight.value + " " + detailCount.length);
+    // masonry ////////////////////
+    $('.grid').masonry({
+        itemSelector: '.grid-item',
+        columnWidth: '.grid-sizer',
+        horizontalOrder: true,
+        // gutter: 0,
+        // percentPosition: true,
+        resize: false
+    });
+    // ////////////////////////////
+
+    ///////////////////////////////////////////////////////////////////
+    let isOverflow = checkOverflow(document.getElementById("sheetId"));
+    let sheetEl = document.getElementById("sheetId")
+    let overflowEl = document.getElementById("overflowId");
+    if (isOverflow) {
+        overflowEl.hidden = false;
+        if (!sheetEl.classList.contains("opacity-50")) {
+            sheetEl.classList.add("opacity-50");
+        }
+    }
+    else {
+        isOverflow.hidden = true;
+        sheetEl.classList.remove("opacity-50");
+    }
+    //////////////////////////////////////////////////////////////////
 }
+
 
 function validate(element, minValue, maxValue, className1, className2, validationElement, validationText) {
     if (element.value < minValue || element.value > maxValue) {
@@ -196,4 +272,19 @@ function validate(element, minValue, maxValue, className1, className2, validatio
         element.classList.remove(className2);
         validationElement.innerText = "";
     }
+}
+
+
+function checkOverflow(el) {
+    let curOverflow = el.style.overflow;
+
+    if (!curOverflow || curOverflow === "visible")
+        el.style.overflow = "hidden";
+
+    let isOverflowing = el.clientWidth < el.scrollWidth
+        || el.clientHeight < el.scrollHeight;
+
+    el.style.overflow = curOverflow;
+
+    return isOverflowing;
 }

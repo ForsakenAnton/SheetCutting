@@ -59,132 +59,140 @@ namespace SheetCutting.Services
 
             List<DetailInfoViewModel> sortedDetails = details
                 .Select(d => d.Clone() as DetailInfoViewModel)
-                .OrderByDescending(d => d?.Height) // (!) Сортируем по высоте детали
-                .ThenByDescending(d => (d?.Height * d?.Width)) // (!) далее сортируем по площади
+                //.OrderByDescending(d => d?.Height) // (!) Сортируем по высоте детали
+                .OrderByDescending(d => (d?.Height * d?.Width)) // (!) сортируем по площади
                 .ToList()!;
 
-            //for (int i = 0; i < sortedDetails.Count; i++)
+            foreach (var detail in sortedDetails)
+            {
+                while (detail.Count != 0)
+                {
+                    result.Add(new DetailViewModel
+                    {
+                        Width = detail.Width,
+                        Height = detail.Height,
+                        BackgroundColor = detail.BackgroundColor,
+                    });
+                    detail.Count--;
+                }
+            }
+            return result;
+
+
+            //while (!sortedDetails.All(d => d.Count == 0))
             //{
-            //    sortedDetails[i].BackgroundColor = (BackgroundColor)i;
+            //    bool isResizedMaxHeight = false;
+            //    bool isLastDetailAdded = false; // (!!!)
+
+            //    int firstMaxHeightInRow = sortedDetails
+            //        .Where(d => d.Count != 0)
+            //        .Max(d => d.Height);
+
+            //    int moreOfOneDetailsInRow = 0; // счетчик двух и более деталей в ряду коллекции result
+            //    for (int i = 0; i < sortedDetails.Count;)
+            //    {
+            //        // (!!!)
+            //        //if (isLastDetailAdded 
+            //        //    && moreOfOneDetailsInRow >= 2 
+            //        //    && result[^1].Details.Count == 0)
+            //        //{
+            //        //    OptimizeFreeSpaceUnderDetail(
+            //        //        result,
+            //        //        sortedDetails,
+            //        //        result[^1].Width,
+            //        //        (firstMaxHeightInRow - result[^1].Height),
+            //        //        i) ;
+            //        //}
+            //        // (!!!)
+
+
+            //        if (remainingWidth >= sortedDetails[i].Width 
+            //            && sortedDetails[i].Count > 0)
+            //        {
+            //            if (!isResizedMaxHeight)
+            //            {
+            //                maxHeightOfDetail = sortedDetails[i].Height;
+            //                isResizedMaxHeight = true;
+            //            }
+
+            //            if (remainingHeight < maxHeightOfDetail)
+            //            {
+            //                _logger.LogInformation("Lack of space for details");
+            //                throw new Exception("Lack of space for details");
+            //            }
+
+            //            if (!Validator.TryValidateObject(sortedDetails[i], new ValidationContext(sortedDetails[i]), null, true))
+            //            {
+            //                sortedDetails[i].Count = 0;
+            //                break;
+            //            }
+            //            result.Add(new DetailViewModel 
+            //            {
+            //                Width = sortedDetails[i].Width, 
+            //                Height = sortedDetails[i].Height,
+            //                BackgroundColor = sortedDetails[i].BackgroundColor,
+            //            });
+
+            //            sortedDetails[i].Count--;
+            //            remainingWidth -= sortedDetails[i].Width;
+
+            //            moreOfOneDetailsInRow++;
+            //            isLastDetailAdded = true; // (!!!)
+            //            // _logger.LogInformation(remainingWidth);
+            //        }
+            //        else
+            //        {
+            //            i++;
+            //        }
+            //    }
+
+            //    remainingWidth = sheet.Width;
+            //    remainingHeight -= maxHeightOfDetail;
+
+            //    moreOfOneDetailsInRow = 0;
+            //    _logger.LogInformation("remainingHeight: " + remainingHeight);
             //}
 
-
-            while (!sortedDetails.All(d => d.Count == 0))
-            {
-                bool isResizedMaxHeight = false;
-                bool isLastDetailAdded = false; // (!!!)
-
-                int firstMaxHeightInRow = sortedDetails
-                    .Where(d => d.Count != 0)
-                    .Max(d => d.Height);
-
-                int moreOfOneDetailsInRow = 0; // счетчик двух и более деталей в ряду коллекции result
-                for (int i = 0; i < sortedDetails.Count;)
-                {
-                    // (!!!)
-                    if (isLastDetailAdded 
-                        && moreOfOneDetailsInRow >= 2 
-                        && result[^1].Details.Count == 0)
-                    {
-                        OptimizeFreeSpaceUnderDetail(
-                            result,
-                            sortedDetails,
-                            result[^1].Width,
-                            (firstMaxHeightInRow - result[^1].Height),
-                            i) ;
-                    }
-                    // (!!!)
-
-
-                    if (remainingWidth >= sortedDetails[i].Width 
-                        && sortedDetails[i].Count > 0)
-                    {
-                        if (!isResizedMaxHeight)
-                        {
-                            maxHeightOfDetail = sortedDetails[i].Height;
-                            isResizedMaxHeight = true;
-                        }
-
-                        if (remainingHeight < maxHeightOfDetail)
-                        {
-                            _logger.LogInformation("Lack of space for details");
-                            //return null!;
-                            throw new Exception("Lack of space for details");
-                        }
-
-                        //if (sortedDetails[i].Width < 50 || sortedDetails[i].Height < 50)
-                        if (!Validator.TryValidateObject(sortedDetails[i], new ValidationContext(sortedDetails[i]), null, true))
-                        {
-                            sortedDetails[i].Count = 0;
-                            break;
-                        }
-                        result.Add(new DetailViewModel 
-                        {
-                            Width = sortedDetails[i].Width, 
-                            Height = sortedDetails[i].Height,
-                            BackgroundColor = sortedDetails[i].BackgroundColor,
-                        });
-
-                        sortedDetails[i].Count--;
-                        remainingWidth -= sortedDetails[i].Width;
-
-                        moreOfOneDetailsInRow++;
-                        isLastDetailAdded = true; // (!!!)
-                        // _logger.LogInformation(remainingWidth);
-                    }
-                    else
-                    {
-                        i++;
-                    }
-                }
-
-                remainingWidth = sheet.Width;
-                remainingHeight -= maxHeightOfDetail;
-
-                moreOfOneDetailsInRow = 0;
-                _logger.LogInformation("remainingHeight: " + remainingHeight);
-            }
-
-            return result;
+            //return result;
         }
 
 
-        private void OptimizeFreeSpaceUnderDetail(
-            List<DetailViewModel> result,
-            List<DetailInfoViewModel>sortedDetails,
-            int remainingWidth, 
-            int remainingHeight, 
-            int index)
-        {
-            for (int i = index; i < sortedDetails.Count;)
-            {
-                if(sortedDetails[i].Count <= 0)
-                {
-                    i++;
-                    continue;
-                }
+        //private void OptimizeFreeSpaceUnderDetail(
+        //    List<DetailViewModel> result,
+        //    List<DetailInfoViewModel>sortedDetails,
+        //    int remainingWidth, 
+        //    int remainingHeight, 
+        //    int index)
+        //{
+        //    for (int i = index; i < sortedDetails.Count;)
+        //    {
+        //        if(sortedDetails[i].Count <= 0)
+        //        {
+        //            i++;
+        //            continue;
+        //        }
 
-                if (remainingWidth >= sortedDetails[i].Width
-                    && remainingHeight >= sortedDetails[i].Height) // (!)
-                {
-                    result[^1].Details.Add(new DetailViewModel()
-                    {
-                        Width = sortedDetails[i].Width,
-                        Height = sortedDetails[i].Height,
-                        BackgroundColor = sortedDetails[i].BackgroundColor, // (BackgroundColor)i
-                    });
+        //        if (remainingWidth >= sortedDetails[i].Width
+        //            && remainingHeight > 0 /*sortedDetails[i].Height*/) // (!)
+        //        {
+        //            result[^1].Details.Add(new DetailViewModel()
+        //            {
+        //                Width = sortedDetails[i].Width,
+        //                Height = sortedDetails[i].Height,
+        //                BackgroundColor = sortedDetails[i].BackgroundColor, // (BackgroundColor)i
+        //            });
 
-                    remainingWidth -= sortedDetails[i].Width;
-                   // remainingHeight -= sortedDetails[i].Height;
-                    sortedDetails[i].Count--;
+        //            remainingWidth -= sortedDetails[i].Width;
+        //           // remainingHeight -= sortedDetails[i].Height;
+        //            sortedDetails[i].Count--;
 
-                    OptimizeFreeSpaceUnderDetail(result[^1].Details, sortedDetails, sortedDetails[i].Width, (remainingHeight - sortedDetails[i].Height), index); // recursion
-                }
-                else
-                {
-                    i++;
-                }
-            }
-        }
+        //            OptimizeFreeSpaceUnderDetail(result[^1].Details, sortedDetails, sortedDetails[i].Width, (remainingHeight - sortedDetails[i].Height), index); // recursion
+        //        }
+        //        else
+        //        {
+        //            i++;
+        //        }
+        //    }
+        //}
     }
 }

@@ -1,59 +1,32 @@
 ﻿@using SheetCutting.Models.ViewModels
 @model IndexViewModel
 
+<div class="m-0"> <-------------------------------- @Model.Sheet.Width --------------------------------> </div>
+<div class="ps-4" style="transform:rotate(90deg); transform-origin:top left"> <-------------------------------- @Model.Sheet.Height --------------------------------> </div>
 
-@if (Model.CuttedDetails != null)
-{
-    <div class="m-0"> <-------------------------------- @Model.Sheet.Width --------------------------------> </div>
-    <div class="ps-4" style="transform:rotate(90deg); transform-origin:top left"> <-------------------------------- @Model.Sheet.Height --------------------------------> </div>
-   
-    <div class="bg-gradient border border-dark p-0 position-relative" style="width:100%; max-width:@(Model.Sheet.Width)px; height:@(Model.Sheet.Height)px; background-color:gainsboro; font-size:0">
-        @foreach (var item in Model.CuttedDetails)
+<div id="sheetId" class="bg-gradient p-0 mb-1" style="width:100%; max-width:@(Model.Sheet.Width)px; height:@(Model.Sheet.Height)px; overflow:hidden; background-color:gainsboro;">
+    <div class="grid">
+        @if (Model.CuttedDetails != null)
         {
-            double widthInPercent = (double)item.Width / Model.Sheet.Width * 100;
-            string percent = widthInPercent.ToString().Replace(',', '.') + "%";
-
-            <div class="d-inline-block m-0 p-0 align-top" style="width:@percent;">
-                <div style="height:@(item.Height)px; background-color:@(item.BackgroundColor); font-size:14px; opacity: 0.7" class="border border-2 border-dark bg-gradient m-0 p-0 text-center">
-                    <span style="opacity:1" class="top-50 position-relative">@(item.Width)x@(item.Height)</span>
+            <div class="grid-sizer" style="background-color:green"></div>
+            @foreach (var item in Model.CuttedDetails)
+            {
+                <div style=" width:@(item.Width)px; height:@(item.Height)px; background-color:@(item.BackgroundColor); opacity:1" class="grid-item border border-2 rounded border-dark bg-gradient m-0 p-0 text-center">
+                    <span style="opacity:1;" class="top-50 position-relative small">@(item.Width)x@(item.Height)</span>
                 </div>
-                if (item.Details?.Count > 0)
-                {
-                    @await Html.PartialAsync(
-                        "_RecursionDetailsPartial",
-                        item);
-                }
-            </div>
+
+                // masonry хорошо друдит с %, когда их конечная сумма равна 100, а больше и меньше начинаются фокусы...
+
+                @*double widthInPercent = (double)item.Width / Model.Sheet.Width * 100;
+                    string percent = widthInPercent.ToString().Replace(',', '.') + "%";
+
+                    <div style=" width:@percent; height:@(item.Height)px; background-color:@(item.BackgroundColor); opacity: 0.7" class="grid-item border border-2 border-dark bg-gradient m-0 p-0 text-center">
+                    <span style="opacity:1" class="top-50 position-relative">@(item.Width)x@(item.Height)</span>
+                    </div>*@
+            }
         }
     </div>
-}
-
-
-
-
-
-@*@if (Model.CuttedDetails != null)
-{
-    <div class="m-0"> <-------------------------------- @Model.Sheet.Width --------------------------------> </div>
-    <div class="ps-4" style="transform:rotate(90deg); transform-origin:top left"> <-------------------------------- @Model.Sheet.Height --------------------------------> </div>
-   
-    <div class="bg-gradient border border-dark p-0 position-relative" style="width:100%; max-width:@(Model.Sheet.Width)px; height:@(Model.Sheet.Height)px; background-color:gainsboro; font-size:0">
-        @foreach (var item in Model.CuttedDetails)
-        {
-            double widthInPercent = (double)item.Width / Model.Sheet.Width * 100;
-            string percent = widthInPercent.ToString().Replace(',', '.') + "%";
-
-            <div class="d-inline-block m-0 p-0" style="width:@percent;">
-                <div style="height:@(item.Height)px; background-color:@(item.BackgroundColor); font-size:14px; opacity: 0.7" class="border border-2 border-dark bg-gradient m-0 p-0 text-center">
-                    <span style="opacity:1" class="top-50 position-relative">@(item.Width)x@(item.Height)</span>
-                </div>
-                if (item.Details?.Count > 0)
-                {
-                    @await Html.PartialAsync(
-                        "_RecursionDetailsPartial",
-                        item);
-                }
-            </div>
-        }
-    </div>
-}*@
+</div>
+<div id="overflowId" class="alert alert-danger text-center fs-4 border-0" role="alert" style="max-width:@(Model.Sheet.Width)px" hidden>
+    <div class="text-dark border-bottom border-warning border-3 rounded-0 mb-1 ps-3">Lack of space for details</div>
+</div>
